@@ -1,4 +1,3 @@
-import './App.css';
 import React, { useEffect } from 'react';
 import { useAtom } from 'jotai';
 import { userAtom } from './atom';
@@ -7,25 +6,28 @@ import Login from './page/login';
 import PostList from './components/PostList';
 import CreatePost from './components/CreatePostButton';
 import Logout from './components/logout';
-import Cookies from 'js-cookie';
 
 function App() {
-  const [user] = useAtom(userAtom);
-  const [, setUser] = useAtom(userAtom);
+  const [user, setUser] = useAtom(userAtom);
 
   useEffect(() => {
     const token = localStorage.getItem("token");
-    const id = Cookies.get('id');
+    const storedEmail = localStorage.getItem("email");
 
-    if (token) {
+
+
+    if (token && storedEmail) {
       setUser({
-        id: id,
         isLoggedIn: true,
-        token: token,
-        email: user.email,
+        email: storedEmail,
       });
     }
-  }, []);
+
+    if (!token && !storedEmail && user.isLoggedIn) {
+      // L'utilisateur est déconnecté, effacer les données du stockage local
+      localStorage.removeItem('email');
+    }
+  }, [setUser, user.isLoggedIn]);
 
   return (
     <div>
@@ -46,6 +48,5 @@ function App() {
     </div>
   );
 }
-
 
 export default App;

@@ -30,14 +30,17 @@ function SignupForm() {
 
       if (response.ok) {
         const data = await response.json();
-        console.log(data);
         const token = response.headers.get("Authorization");
+        const email = data.data.email;
 
         localStorage.setItem("token", token);
+        localStorage.setItem("email", email);
 
-        setUser({
+        setUser((prevUser) => ({
+          ...prevUser,
           isLoggedIn: true,
-        });
+          email: email,
+        }));
       } else {
         setError("Erreur lors de la création du compte");
       }

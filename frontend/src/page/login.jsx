@@ -29,15 +29,16 @@ function Login() {
       if (response.ok) {
         const responseData = await response.json();
         const token = response.headers.get("Authorization");
+        const email = responseData.data.email;
 
-        // Utilisez le token JWT pour effectuer des actions d'authentification, telles que le stockage dans le localStorage.
-        // Par exemple :
         localStorage.setItem("token", token);
+        localStorage.setItem("email", email);
 
-        setUser({
+        setUser((prevUser) => ({
+          ...prevUser,
           isLoggedIn: true,
-          userData: responseData.user, // Suppose que le serveur renvoie un objet `user`
-        });
+          email: email,
+        }));
       } else {
         setError("Identifiants invalides");
       }
@@ -51,20 +52,26 @@ function Login() {
       <form onSubmit={handleLogin}>
         <h2>Se connecter</h2>
         {error && <p>{error}</p>}
-        <input
-          type="text"
-          placeholder="Adresse email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          required
-        />
-        <input
-          type="password"
-          placeholder="Mot de passe"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          required
-        />
+        <div>
+          <label htmlFor="email">Email :</label>
+          <input
+            type="email"
+            id="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            required
+          />
+        </div>
+        <div>
+          <label htmlFor="password">Mot de passe :</label>
+          <input
+            type="password"
+            id="password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            required
+          />
+        </div>
         <button type="submit">Se connecter</button>
       </form>
     </div>
